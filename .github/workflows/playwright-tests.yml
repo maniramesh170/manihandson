@@ -1,1 +1,38 @@
+name: Playwright Tests  # Workflow name
 
+on:
+  push:
+    branches:
+      - main  # Run tests when code is pushed to 'main' branch
+  pull_request:
+    branches:
+      - main  # Run tests when a PR is created
+
+jobs:
+  test:
+    runs-on: ubuntu-latest  # Run tests on an Ubuntu server
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3  # Pull the latest code
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18  # Use Node.js v18
+
+      - name: Install Dependencies
+        run: npm install  # Install required packages
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps  # Install browsers
+
+      - name: Run Playwright Tests
+        run: npx playwright test  # Execute Playwright tests
+
+      - name: Upload Test Reports
+        uses: actions/upload-artifact@v3
+        if: always()  # Upload reports even if tests fail
+        with:
+          name: playwright-report
+          path: playwright-report/
